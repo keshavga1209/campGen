@@ -3,6 +3,7 @@ import { IoCloseCircle } from "react-icons/io5";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import { TfiReload } from "react-icons/tfi";
 import { FiRefreshCw } from "react-icons/fi";
+import {RiAiGenerate} from 'react-icons/ri'
 
 import SpeechRecognition, {
 	useSpeechRecognition,
@@ -101,9 +102,9 @@ export default function Level2Prompt({ setCreatePopup, setLevel }) {
 
 					<button
 						className="cursor-pointer  h-7 bg-green-500 hover:bg-green-400 text-white flex gap-2 items-center rounded-xl py-1 px-3 mt-4"
-						onClick={(_) => setLevel(4)}>
+						onClick={(_) => setLevel(3)}>
 						{/* <FcPrevious /> */}
-						<FiRefreshCw />
+						<RiAiGenerate />
 						Generate Campaign
 					</button>
 				</div>

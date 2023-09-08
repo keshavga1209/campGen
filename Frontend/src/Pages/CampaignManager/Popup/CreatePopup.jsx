@@ -12,7 +12,7 @@ import Level2Prompt from "./Level2Popup";
 import Level1Prompt from "./Level1Popup";
 import DefaultLevel from "./DefaultLevel";
 import Loader from "../../../Components/Loader";
-import Level3Prompt from "./Level4Popup";
+import Level3Prompt from "./Level3Popup";
 import Level4Prompt from "./Level4Popup";
 
 export default function CreatePopup({ setCreatePopup }) {
@@ -36,6 +36,14 @@ export default function CreatePopup({ setCreatePopup }) {
 						setLevel={setLevel}
 					/>
 				);
+			case 3:
+				return (
+					<Level3Prompt
+						setCreatePopup={setCreatePopup}
+						setLevel={setLevel}
+					/>
+				);
+
 			case 4:
 				return (
 					<Level4Prompt
