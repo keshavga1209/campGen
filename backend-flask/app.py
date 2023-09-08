@@ -10,6 +10,7 @@ from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 import db
 from bson.json_util import dumps, loads
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 CORS(app)
@@ -135,17 +136,11 @@ def generate():
 #     print(response)
 #     return response.content
 
-@app.route("/test")
-def add_campaign2():
-    db.db.campaigns.insert_one({"name": "John"})
-    return "Connected to the data base!"
-
 @app.route('/add_campaign', methods=["POST"])
 def add_campaign():
     post_data = request.get_json()
     try:
         campaign_doc = {
-                        'id': post_data['id'],
                         'title': post_data['title'],
                         'raw_prompt': post_data['raw_prompt'],
                         'engineered_prompt': post_data['engineered_prompt'],
@@ -163,11 +158,12 @@ def add_campaign():
 @app.route('/update_campaign', methods=['POST'])
 def query_records():
     post_data = request.get_json()
-    if db.db.campaigns.count_documents({ "id": "12" }, limit = 1) == 0:
+    id = post_data['_id']
+  
+    if db.db.campaigns.count_documents({ "_id": ObjectId(id) }, limit = 1) == 0:
         return jsonify({'error': 'campaign not found'})
     try:
         campaign_doc = {
-                        'id': post_data['id'],
                         'title': post_data['title'],
                         'raw_prompt': post_data['raw_prompt'],
                         'engineered_prompt': post_data['engineered_prompt'],
@@ -178,7 +174,7 @@ def query_records():
                         'medium': post_data['medium']
                     }
         response = db.db.campaigns.update_one(
-            { "id": post_data['id'] },
+            { "id": ObjectId(id) },
             { "$set": campaign_doc }
         )
         return jsonify({"response": "success"}), 200
@@ -191,9 +187,13 @@ def query_records():
 @app.route('/delete_campaign', methods=["DELETE"])
 def delete_campaign():
     post_data = request.get_json()
+    id = post_data['_id']
+    print(id)
+    if db.db.campaigns.count_documents({ "_id": ObjectId(id) }, limit = 1) == 0:
+        return jsonify({'error': 'campaign does not exist'})
+
     try:
-        id = post_data['id']
-        response = db.comments.delete_one( { "id": id } )
+        response = db.db.campaigns.delete_one( { "_id": ObjectId(id) } )
 
         return jsonify({"response": "success"}), 200
     except Exception as e:
