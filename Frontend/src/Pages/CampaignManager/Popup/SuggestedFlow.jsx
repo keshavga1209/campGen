@@ -10,7 +10,7 @@ import Loader from "../../../Components/Loader";
 import { request } from "../../../Utils/request";
 import endpoints from "../../../Utils/endpoints";
 
-export default function Level3Prompt({ setCreatePopup, setLevel }) {
+export default function SuggestedFlow({ setCreatePopup, setLevel }) {
 
 	const [text, setText] = useState('')
 	const [generatedContent, setGeneratedContent] = useState(null)
@@ -25,24 +25,11 @@ export default function Level3Prompt({ setCreatePopup, setLevel }) {
 	}
 
 	const generateCampaign = async () => {
-		setIsLoading(true)
-		const [err, res] = await request(
-			'POST', 
-			endpoints.GENERATE_CAMPAIGN, 
-			{
-				prompt: localStorage.getItem('optimized_prompt')
-			}
-		) 
-		if (err==='network_error'){
-			window.alert('check your network and try again')
-			return
-		}
-		if (err!==null){
-			window.alert(JSON.stringify(err))
-			return
-		}
-		setText(res?.['caption'] || '')
-		setGeneratedContent(res)	
+		setText(localStorage.getItem('caption'))
+		setGeneratedContent({
+			'caption': localStorage.getItem('caption'),
+			'img_url': localStorage.getItem('img_base_64')
+		})	
 		setIsLoading(false)
 	}
 
@@ -72,11 +59,13 @@ export default function Level3Prompt({ setCreatePopup, setLevel }) {
 					{" "}
 					<IoCloseCircle size={"25px"} />{" "}
 				</span>
+
 				<h1
 					className={`p-2 text-lg text-gray-400 w-full text-center border-b border-gray-300`}>
 					{/* {listening ? "Listening..." : "Click mic to speak"} */}
 					Generated Campaign
 				</h1>
+
 
 				<div className="flex justify-center gap-8 mt-4">
 					<div>

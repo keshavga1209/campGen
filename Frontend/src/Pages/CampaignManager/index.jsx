@@ -8,10 +8,11 @@ import CreatePopup from "./Popup/CreatePopup";
 
 export default function CampaignManager(props) {
 	const [createPopup, setCreatePopup] = useState(false);
+	const [startLevel, setStartLevel] = useState(1);
 
 	return (
 		<>
-			{createPopup && <CreatePopup setCreatePopup={setCreatePopup} />}
+			{createPopup && <CreatePopup setCreatePopup={setCreatePopup} startLevel={startLevel}/>}
 			<MainPanelLayout
 				title={"Campaign Manager"}
 				button={
@@ -23,7 +24,7 @@ export default function CampaignManager(props) {
 					</button>
 				}>
 				<h1 className="text-xl font-bold mt-6"> Suggested Media </h1>
-				<SuggestedContent />
+				<SuggestedContent setCreatePopup={setCreatePopup} setStartLevel={setStartLevel}/>
 
 				<h1 className="text-xl font-bold mt-6">
 					{" "}

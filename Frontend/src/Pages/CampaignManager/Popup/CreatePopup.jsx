@@ -14,9 +14,10 @@ import DefaultLevel from "./DefaultLevel";
 import Loader from "../../../Components/Loader";
 import Level3Prompt from "./Level3Popup";
 import Level4Prompt from "./Level4Popup";
+import SuggestedFlow from "./SuggestedFlow";
 
-export default function CreatePopup({ setCreatePopup }) {
-	const [level, setLevel] = useState(1);
+export default function CreatePopup({ setCreatePopup, startLevel }) {
+	const [level, setLevel] = useState(startLevel || 1);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const levelWiseComponents = () => {
@@ -52,6 +53,13 @@ export default function CreatePopup({ setCreatePopup }) {
 						text={"Yoooo"}
 					/>
 				);
+			case 69:
+				return (
+					<SuggestedFlow
+						setCreatePopup={setCreatePopup}
+						setLevel={setLevel}
+					/>
+				)
 			default:
 				return (
 					<DefaultLevel
