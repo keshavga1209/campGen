@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import { TfiReload } from "react-icons/tfi";
-import { FiRefreshCw } from "react-icons/fi";
-
-import SpeechRecognition, {
-	useSpeechRecognition,
-} from "react-speech-recognition";
-import reloadImg from "../../../Assets/reload-img.png";
-
+import { request } from "../../../Utils/request";
+import endpoints from "../../../Utils/endpoints";
+import { useNavigate } from "react-router-dom";
+import Loader from "../../../Components/Loader";
 export default function Level4Prompt({ setCreatePopup, setLevel }) {
+
 	let date = new Date();
+	const navigate = useNavigate()
+	const [isLoading, setIsLoading] = useState(false);
+
 	const [Campaign, setCampaign] = useState({
 		title: "",
 		medium: "",
@@ -27,16 +27,42 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 		return () => {};
 	}, []);
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setIsLoading(true)
+		const [err, res] = await request(
+			'POST', 
+			endpoints.ADD_CAMPAIGN, 
+			{
+				'title': Campaign['title'],
+				'raw_prompt': localStorage.getItem('prompt'),
+				'engineered_prompt': localStorage.getItem('optimized_prompt'),
+				'generated_content': localStorage.getItem('caption'),
+				'base64_img': localStorage.getItem('img_base_64'),
+				'created_date': new Date(),
+				'schedule_date': Campaign['scheduledDate'],
+				'medium': Campaign['medium']
+			}
+		) 
+		if (err==='network_error'){
+			window.alert('check your network and try again')
+			return
+		}
+		if (err!==null){
+			window.alert(JSON.stringify(err))
+			return
+		}
+		setIsLoading(false)
+		if(err===null){
+			alert('Campaign saved!')
+			navigate(0)
+		}
 
-		console.log(JSON.stringify(Campaign, 4, 4));
 	};
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 
-		console.log(name, value);
 
 		setCampaign((prevCampaign) => ({
 			...prevCampaign,
@@ -45,6 +71,14 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 	};
 
 	const mediumTypes = ["Email", "Poster", "Social Media", "Other"];
+
+	if(isLoading) return (
+		<div className="fixed top-0 left-0 flex justify-center items-center h-full w-full backdrop-blur-sm z-10">
+			<div className="relative bg-white rounded-lg h-[22rem] w-[24rem] shadow-lg flex flex-col items-center justify-center">
+				<Loader />
+			</div>
+		</div>
+	);
 
 	return (
 		<div className="fixed top-0 left-0 flex justify-center items-center h-full w-full backdrop-blur-sm z-10">
@@ -64,7 +98,7 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 				</span>
 
 				<h1 className="p-2 text-lg text-gray-400 w-full text-center border-b border-gray-300">
-					More info about the Campaign
+					Save your campaign
 				</h1>
 
 				<form

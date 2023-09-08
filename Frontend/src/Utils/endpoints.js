@@ -1,7 +1,8 @@
 
 const endpoints = ({
-  ENDPOINT_1: '/api/auth/login',
-  ENDPOINT_2: query => `/search?q=${query}`,
+    OPTIMIZED_PROMPT: `/optimisePrompt`,
+    GENERATE_CAMPAIGN: `/generate`,
+    ADD_CAMPAIGN: `/add_campaign`
 })
 
 export default endpoints

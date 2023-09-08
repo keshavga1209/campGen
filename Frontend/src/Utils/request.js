@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.lregi.jp'
+export const BASE_URL = 'https://493a-122-187-108-202.ngrok-free.app'
 
 export async function request(method, endpoint, data = undefined, omitToken = false, ContentType = 'application/json'){
   try {

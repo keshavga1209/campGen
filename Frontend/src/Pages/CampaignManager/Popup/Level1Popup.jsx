@@ -68,7 +68,10 @@ export default function Level1Prompt({ setCreatePopup, setLevel }) {
 				/>
 				<button
 					className="bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3 mt-4"
-					onClick={(_) => setLevel(2)}>
+					onClick={(_) => {
+						localStorage.setItem('prompt', text)
+						setLevel(2)
+					}}>
 					<FcNext />
 					Next
 				</button>
