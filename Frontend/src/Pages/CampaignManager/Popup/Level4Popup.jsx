@@ -14,11 +14,13 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 	const [Campaign, setCampaign] = useState({
 		title: "",
 		medium: "",
-		scheduledDate: new Date(
-			date.getTime() - date.getTimezoneOffset() * 60000
-		)
-			.toISOString()
-			.substring(0, 10),
+		// scheduledDate: new Date(
+		// 	date.getTime() - date.getTimezoneOffset() * 60000
+		// )
+		// 	.toISOString()
+		// 	.substring(0, 10),
+
+		scheduledDate: date,
 	});
 
 	useEffect(() => {
@@ -49,7 +51,7 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 			<div className="relative bg-white rounded-lg h-[24rem] w-[28rem] shadow-lg flex flex-col items-center">
 				<button
 					className="cursor-pointer absolute top-2 h-7 left-2 bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3"
-					onClick={(_) => setLevel(2)}>
+					onClick={(_) => setLevel(3)}>
 					<FcPrevious />
 					Back
 				</button>
@@ -65,7 +67,9 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 					More info about the Campaign
 				</h1>
 
-				<form onSubmit={(e) => handleSubmit(e)} className="mt-4">
+				<form
+					onSubmit={(e) => handleSubmit(e)}
+					className="mt-4 w-full px-8">
 					<div>
 						<label
 							className="block text-grey-darker text-sm font-bold mb-2"
@@ -76,7 +80,7 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 							required
 							type="text"
 							name="title"
-							className="appearance-none h-full rounded-lg bg-gray-300 block w-[12rem] border-gray-400 text-gray-700 py-2 px-2 leading-tight focus:outline-none focus:border-gray-500"
+							className="appearance-none h-full rounded-lg bg-gray-300 block w-full border-gray-400 text-gray-700 py-2 px-2 leading-tight focus:outline-none focus:border-gray-500"
 							placeholder="Enter title..."
 							value={Campaign.title}
 							onChange={handleChange}
@@ -92,7 +96,7 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 						<select
 							required
 							name="medium"
-							className="appearance-none h-full rounded-lg bg-gray-300 block w-[12rem] border-gray-400 text-gray-700 py-2 px-2  leading-tight focus:outline-none focus:border-gray-500"
+							className="appearance-none h-full rounded-lg bg-gray-300 block w-full border-gray-400 text-gray-700 py-2 px-2  leading-tight focus:outline-none focus:border-gray-500"
 							onChange={handleChange}>
 							<option value="">Not selected</option>
 
@@ -108,17 +112,18 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 						<label
 							className="block text-grey-darker text-sm font-bold mb-2"
 							htmlFor="username">
-							Scheduled Date {"(Launch Date)"}
+							Launch Date-Time
 						</label>
 						<input
 							required
-							type="date"
+							type="datetime-local"
 							name="scheduledDate"
-							className="appearance-none h-full rounded-lg bg-gray-300 block w-[12rem] border-gray-400 text-gray-700 py-2 px-2 leading-tight focus:outline-none focus:border-gray-500"
+							className="appearance-none h-full rounded-lg bg-gray-300 block w-full border-gray-400 text-gray-700 py-2 px-2 leading-tight focus:outline-none focus:border-gray-500"
+							onChange={handleChange}
 						/>
 					</div>
 
-					<button className="mt-5 w-[12rem] rounded-md bg-green-600 hover:bg-green-400 py-2 px-5 text-white">
+					<button className="mt-6 w-full mx-auto  rounded-md bg-green-600 hover:bg-green-400 py-2 px-5 text-white">
 						Submit
 					</button>
 				</form>
