@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { FcPrevious } from "react-icons/fc";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiEdit, FiRefreshCw } from "react-icons/fi";
 import {FaRegCopy} from "react-icons/fa6";
 
 import { BsCloudCheck, BsDownload } from "react-icons/bs";
@@ -9,12 +9,20 @@ import imgSrc3 from '../../../Assets/genpictures (3).png'
 import Loader from "../../../Components/Loader";
 import { request } from "../../../Utils/request";
 import endpoints from "../../../Utils/endpoints";
+import ImageEditor from "../../../Components/ImageEditor";
 
 export default function Level3Prompt({ setCreatePopup, setLevel }) {
 
 	const [text, setText] = useState('')
 	const [generatedContent, setGeneratedContent] = useState(null)
 	const [isLoading, setIsLoading] = useState(false);
+
+	const [editing, setEditing] = useState(false);
+
+	const onImageSave = (img_obj, design_state) => {
+		setGeneratedContent(gc=>({...gc, "img_url": img_obj.imageBase64}))
+		setEditing(false)
+	}
 
 	async function copyTextToClipboard(text) {
 	  if ('clipboard' in navigator) {
@@ -84,7 +92,14 @@ export default function Level3Prompt({ setCreatePopup, setLevel }) {
 							className={`pt-2 text-md w-full text-center`}>
 							Generated Image <BsDownload className="ml-2 inline cursor-pointer" onClick={_=>console.log('download')}/>
 						</h2>
-						<img className="mt-1" src={generatedContent?.['img_url']} width={400}/>
+						{
+							editing?
+							<div className="image-editor w-[400px]">
+								{ generatedContent?.['img_url'] && <ImageEditor onSave={onImageSave} src={generatedContent?.['img_url']}/> }
+							</div>:
+							<img className="mt-1" src={generatedContent?.['img_url']} width={400}/>
+						}						
+
 					</div>
 
 					<div>
@@ -104,6 +119,17 @@ export default function Level3Prompt({ setCreatePopup, setLevel }) {
 				</div>
 
 				<div className="flex gap-2">
+					{
+						!editing &&
+						<button
+							className="cursor-pointer h-7 bg-blue-500 hover:bg-red-400 text-white flex gap-2 items-center rounded-xl py-1 px-3 mt-4"
+							onClick={(_) => setEditing(true)}>
+							{/* <FcPrevious /> */}
+							<FiEdit />
+							Edit Image
+						</button>
+					}
+
 					<button
 						className="cursor-pointer  h-7 bg-red-500 hover:bg-red-400 text-white flex gap-2 items-center rounded-xl py-1 px-3 mt-4"
 						onClick={(_) => generateCampaign()}>
