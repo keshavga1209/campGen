@@ -14,7 +14,7 @@ from bson.json_util import dumps, loads
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/optimisePrompt", methods=["GET"])
+@app.route("/optimisePrompt", methods=["POST"])
 def optimisePrompt():
     data = request.get_json()
     prompt = data["prompt"]
@@ -203,8 +203,23 @@ def search_campaign():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-def main():
-    print(compare_with_base())
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
-if __name__ == '__main__':
-    main()
+def print_date_time():
+    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=print_date_time, trigger="interval", seconds=10)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
+
+# def main():
+#     print(compare_with_base())
+
+# if __name__ == '__main__':
+#     main()
