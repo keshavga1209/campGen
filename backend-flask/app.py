@@ -5,32 +5,33 @@ from dotenv import load_dotenv
 load_dotenv()
 from os import environ
 import io
+import json
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/optimisePrompt", methods=["POST"])
+@app.route("/optimisePrompt", methods=["GET"])
 def optimisePrompt():
     data = request.get_json()
-    resp["prompts"] = prompt
-
+    prompt = data["prompt"]
+    EDENAI_API_KEY = environ.get('EDENAI_API_KEY')
     headers = {"Authorization": f"Bearer {EDENAI_API_KEY}"}
     url ="https://api.edenai.run/v2/text/prompt_optimization"
     payload = {
         "providers": "openai",
-        "text": "Alabasta Bakery is a chain that delivers delicious bakery items like cakes, breads, pastries, cookies and many similar packaged items. Need to create an image for email advertisement for the upcoming Indian Independence day for all the users getting 20 percent discount on all the products.",
+        "text": prompt,
         "target_provider" : "google"
     }
     response = requests.post(url, json=payload, headers=headers)
 
     result = json.loads(response.text)
-    # print(result['openai'])
     return result['openai']
 
 def generateImg(prompt):
     API_URL = "https://api.edenai.run/v2/image/generation"
+    EDENAI_API_KEY = environ.get('EDENAI_API_KEY')
     headers  = {"Authorization": f"Bearer {EDENAI_API_KEY}"}
     provider = "openai"
     payload = {
@@ -58,9 +59,11 @@ def generateCaption(prompt):
         "target_lang": "en",
         "temperature": 0.65
     }
+    TEXT_CORTEX_API = environ.get('TEXT_CORTEX_API')
+
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer gAAAAABk-xLbZLAWKeSscOfn9YoVdfLhTiE2tHcBWU9fsBQnDb6GSZtCZdl4CaGos-uq5NPmDYd1L90uOztYKbQ9qiIMMf3iJyUgSQbPFRe0jAK6I44Iszle7KFTiJcpiWokLmpT9uWw"
+        "Authorization": f"Bearer {TEXT_CORTEX_API}"
     }
 
     response = requests.post(url, json=payload, headers=headers)
@@ -79,7 +82,7 @@ def generate():
     data = request.get_json()
     prompt = data["prompt"]
     # prompt = "To generate a advertisement for Bakery on Indian Independence day for social media posts"
-    img_url = generateImg(prompt)
+    img_url = generateImg2(prompt)
     text = generateCaption(prompt)
     
     res = {}
@@ -88,15 +91,15 @@ def generate():
     
     return res
 
-@app.route("/genImage2", methods=["POST"])
-def generateImages2():
-    data = request.get_json()
-    prompt = data["prompt"]
-    res = requests.get(f'https://www.genpictures.com/api/image?prompt={prompt}')
-    image = 'data:image/jpg;base64,'+res.json()['imageData']
-    resp = {}
-    resp["image"] = image
-    return resp
+# @app.route("/genImage2", methods=["POST"])
+# def generateImages2():
+#     data = request.get_json()
+#     prompt = data["prompt"]
+#     res = requests.get(f'https://www.genpictures.com/api/image?prompt={prompt}')
+#     image = 'data:image/jpg;base64,'+res.json()['imageData']
+#     resp = {}
+#     resp["image"] = image
+#     return resp
 
 # Hugging Face Method
 
@@ -121,14 +124,14 @@ def generateImages2():
 #     resp["status"] = "WIP"
 #     return resp
 
-def post_request(API_URL, headers, payload):
-    response = requests.post(API_URL, headers=headers, json=payload)
-    return response
+# def post_request(API_URL, headers, payload):
+#     response = requests.post(API_URL, headers=headers, json=payload)
+#     return response
 
-def handle_hfquery(API_URL, headers, payload):
-    response = requests.post(API_URL, headers=headers, json=payload)
-    print(response)
-    return response.content
+# def handle_hfquery(API_URL, headers, payload):
+#     response = requests.post(API_URL, headers=headers, json=payload)
+#     print(response)
+#     return response.content
 
 def main():
     print(compare_with_base())
