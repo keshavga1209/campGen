@@ -25,9 +25,28 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 		return () => {};
 	}, []);
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		console.log(JSON.stringify(Campaign, 4, 4));
+	};
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+
+		console.log(name, value);
+
+		setCampaign((prevCampaign) => ({
+			...prevCampaign,
+			[name]: value,
+		}));
+	};
+
+	const mediumTypes = ["Email", "Poster", "Social Media", "Other"];
+
 	return (
 		<div className="fixed top-0 left-0 flex justify-center items-center h-full w-full backdrop-blur-sm z-10">
-			<div className="relative bg-white rounded-lg h-[44rem] w-[38rem] shadow-lg flex flex-col items-center">
+			<div className="relative bg-white rounded-lg h-[24rem] w-[28rem] shadow-lg flex flex-col items-center">
 				<button
 					className="cursor-pointer absolute top-2 h-7 left-2 bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3"
 					onClick={(_) => setLevel(2)}>
@@ -43,88 +62,65 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 				</span>
 
 				<h1 className="p-2 text-lg text-gray-400 w-full text-center border-b border-gray-300">
-					Info about the Campaign
+					More info about the Campaign
 				</h1>
 
-				<form action="">
-					<div class="mb-4">
+				<form onSubmit={(e) => handleSubmit(e)} className="mt-4">
+					<div>
 						<label
-							class="block text-gray-700 text-sm font-bold mb-2"
-							for="name">
+							className="block text-grey-darker text-sm font-bold mb-2"
+							htmlFor="username">
 							Title
 						</label>
 						<input
-							class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-							id="name"
+							required
 							type="text"
-							placeholder="Text input"
-							value={"abc"}
+							name="title"
+							className="appearance-none h-full rounded-lg bg-gray-300 block w-[12rem] border-gray-400 text-gray-700 py-2 px-2 leading-tight focus:outline-none focus:border-gray-500"
+							placeholder="Enter title..."
+							value={Campaign.title}
+							onChange={handleChange}
 						/>
 					</div>
-					<div class="mb-4">
+
+					<div className="mt-4">
 						<label
-							class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-							for="grid-state">
-							Subject
+							className="block text-grey-darker text-sm font-bold mb-2"
+							htmlFor="username">
+							Medium
 						</label>
-						<div class="relative">
-							<select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-								<option>Select dropdown</option>
-								<option>With options</option>
-							</select>
-							<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-								<svg
-									class="fill-current h-4 w-4"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 20 20">
-									<path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-								</svg>
-							</div>
-						</div>
+						<select
+							required
+							name="medium"
+							className="appearance-none h-full rounded-lg bg-gray-300 block w-[12rem] border-gray-400 text-gray-700 py-2 px-2  leading-tight focus:outline-none focus:border-gray-500"
+							onChange={handleChange}>
+							<option value="">Not selected</option>
+
+							{mediumTypes.map((m, i) => (
+								<option key={i} value={m}>
+									{m}
+								</option>
+							))}
+						</select>
 					</div>
-					<div class="mb-4">
-						<label class="block">
-							<input class="mr-2 leading-tight" type="checkbox" />
-							<span class="text-sm">I agree this</span>
+
+					<div className="mt-4">
+						<label
+							className="block text-grey-darker text-sm font-bold mb-2"
+							htmlFor="username">
+							Scheduled Date {"(Launch Date)"}
 						</label>
+						<input
+							required
+							type="date"
+							name="scheduledDate"
+							className="appearance-none h-full rounded-lg bg-gray-300 block w-[12rem] border-gray-400 text-gray-700 py-2 px-2 leading-tight focus:outline-none focus:border-gray-500"
+						/>
 					</div>
-					<div class="mb-4">
-						<label class="inline-flex items-center">
-							<input
-								type="radio"
-								class="form-radio"
-								name="accountType"
-								value="1"
-							/>
-							<span class="ml-2">Yes</span>
-						</label>
-						<label class="inline-flex items-center ml-6">
-							<input
-								type="radio"
-								class="form-radio"
-								name="accountType"
-								value="2"
-							/>
-							<span class="ml-2">No</span>
-						</label>
-					</div>
-					<div class="mb-4">
-						<label class="block text-gray-700 text-sm font-bold mb-2">
-							Message
-							<textarea
-								class="shadow form-textarea mt-1 block w-full border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-								rows="5"
-								placeholder="Textarea"></textarea>
-						</label>
-					</div>
-					<div class="flex items-center justify-between">
-						<button
-							class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-							type="button"
-							onClick={(_) => setLevel(100)}>
-							Submit
-						</button>
-					</div>
+
+					<button className="mt-5 w-[12rem] rounded-md bg-green-600 hover:bg-green-400 py-2 px-5 text-white">
+						Submit
+					</button>
 				</form>
 			</div>
 		</div>
