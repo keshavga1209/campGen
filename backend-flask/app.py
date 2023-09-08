@@ -23,7 +23,8 @@ def optimisePrompt():
     url ="https://api.edenai.run/v2/text/prompt_optimization"
     payload = {
         "providers": "openai",
-        "text": "Alabasta Bakery is a chain that delivers delicious bakery items like cakes, breads, pastries, cookies and many similar packaged items. Need to create an image for email advertisement for the upcoming Indian Independence day for all the users getting 20 percent discount on all the products.",
+        "text": prompt,
+        # "Alabasta Bakery is a chain that delivers delicious bakery items like cakes, breads, pastries, cookies and many similar packaged items. Need to create an image for email advertisement for the upcoming Indian Independence day for all the users getting 20 percent discount on all the products.",
         "target_provider" : "google"
     }
     response = requests.post(url, json=payload, headers=headers)
@@ -70,15 +71,13 @@ def generateCaption(prompt):
     }
 
     response = requests.post(url, json=payload, headers=headers)
-    caption = json.loads(response.text)["data"]["outputs"][0]["text"]
+    caption = response.json()["data"]["outputs"][0]["text"]
     return caption
     
 def generateImg2(prompt):
     res = requests.get(f'https://www.genpictures.com/api/image?prompt={prompt}')
     image = 'data:image/jpg;base64,'+res.json()['imageData']
-    resp = {}
-    resp["image"] = image
-    return resp
+    return image
 
 @app.route("/generate", methods=["POST"])
 def generate():
@@ -203,20 +202,20 @@ def search_campaign():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-import time
-import atexit
-from apscheduler.schedulers.background import BackgroundScheduler
+# import time
+# import atexit
+# from apscheduler.schedulers.background import BackgroundScheduler
 
-def print_date_time():
-    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+# def print_date_time():
+#     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=print_date_time, trigger="interval", seconds=10)
-scheduler.start()
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(func=print_date_time, trigger="interval", seconds=10)
+# scheduler.start()
 
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: scheduler.shutdown())
+# # Shut down the scheduler when exiting the app
+# atexit.register(lambda: scheduler.shutdown())
 
 # def main():
 #     print(compare_with_base())
