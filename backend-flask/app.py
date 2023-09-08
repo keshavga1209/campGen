@@ -1,3 +1,4 @@
+from __future__ import print_function
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
@@ -11,6 +12,13 @@ from concurrent.futures import ThreadPoolExecutor
 import db
 from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
+import datetime
+import os.path
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 app = Flask(__name__)
 CORS(app)
@@ -93,6 +101,66 @@ def generate():
     res["caption"] = text
     
     return res
+
+@app.route("/upcoming-events", methods=["POST"])
+def fetch_upcoming_events():
+    data = request.get_json()
+    events = gcal_list_events()
+    buisnessName = data["buisness-name"]
+    rows = []
+    for event in events:
+        prompt = "To generate a marketing campaign on the occasion of " + event["summary"] + " with attractive sales on varied products at "+ buisnessName
+        row = {}
+        row["event"] = event["summary"]
+        row["prompt"] = prompt
+        rows.append(row)
+    res = {}
+    res["upcomingEvents"] = rows
+    return res
+
+
+# If modifying these scopes, delete the file token.json.
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
+
+def gcal_list_events():
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    try:
+        service = build('calendar', 'v3', credentials=creds)
+
+        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+
+        events_result = service.events().list(calendarId='en.indian#holiday@group.v.calendar.google.com', timeMin=now,
+                                              maxResults=3, singleEvents=True,
+                                              orderBy='startTime').execute()
+        events = events_result.get('items', [])
+
+        if not events:
+            print('No upcoming events found.')
+            return []
+
+        # Prints the start and name of the next 10 events
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            print(event['summary'])
+        
+        return events
+
+    except HttpError as error:
+        print('An error occurred: %s' % error)
+        return []
 
 # @app.route("/genImage2", methods=["POST"])
 # def generateImages2():
