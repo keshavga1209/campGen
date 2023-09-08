@@ -10,6 +10,7 @@ import SpeechRecognition, {
 import reloadImg from "../../../Assets/reload-img.png";
 
 export default function Level4Prompt({ setCreatePopup, setLevel }) {
+	let date = new Date();
 	const [Campaign, setCampaign] = useState({
 		title: "",
 		medium: "",
@@ -119,7 +120,8 @@ export default function Level4Prompt({ setCreatePopup, setLevel }) {
 					<div class="flex items-center justify-between">
 						<button
 							class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-							type="button">
+							type="button"
+							onClick={(_) => setLevel(100)}>
 							Submit
 						</button>
 					</div>

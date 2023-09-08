@@ -29,7 +29,7 @@ export default function DefaultLevel({ setCreatePopup, setLevel, text }) {
 				Into the default level
 				<button
 					className="bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3 mt-4"
-					onClick={(_) => setLevel(3)}>
+					onClick={(_) => setLevel(4)}>
 					<FcPrevious />
 					Back
 				</button>
