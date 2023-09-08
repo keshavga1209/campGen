@@ -37,3 +37,21 @@ export async function request(method, endpoint, data = undefined, omitToken = fa
     return ['network_error', null]
   }
 }
+
+
+// const [err, res] = await request(
+// 	'get', 
+// 	endpoints.GET_CATEGORY(localStorage.getItem('restaurant')), 
+// ) 
+// console.log(err, res)
+// if (err==='network_error'){
+// 	// window.alert('check your network and try again')
+// 	return
+// }
+//
+// if (err!==null){
+// 	// window.alert(JSON.stringify(err)+'\n Contact Us! give this error')
+// 	return
+// }
+// // now you can use res
+	  
