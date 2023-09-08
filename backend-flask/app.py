@@ -163,17 +163,29 @@ def add_campaign():
 @app.route('/update_campaign', methods=['POST'])
 def query_records():
     post_data = request.get_json()
-    id = post_data['id']
-    title = post_data['title']
-    schedule_date = post_data['schedule_date']
-    generated_content = post_data['generated_content']
-    if not id:
+    if db.db.campaigns.count_documents({ "id": "12" }, limit = 1) == 0:
         return jsonify({'error': 'campaign not found'})
-    else:
+    try:
+        campaign_doc = {
+                        'id': post_data['id'],
+                        'title': post_data['title'],
+                        'raw_prompt': post_data['raw_prompt'],
+                        'engineered_prompt': post_data['engineered_prompt'],
+                        'generated_content': post_data['generated_content'],
+                        'base64_img': post_data['base64_img'],
+                        'created_date': post_data['created_date'],
+                        'schedule_date': post_data['schedule_date'],
+                        'medium': post_data['medium']
+                    }
         response = db.db.campaigns.update_one(
-            { "id": id },
-            { "$set": { "title ": title, "schedule_date" : schedule_date, "generated_content":generated_content } }
+            { "id": post_data['id'] },
+            { "$set": campaign_doc }
         )
+        return jsonify({"response": "success"}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+   
+    else:
         return jsonify({"response": "success"}), 200
     
 @app.route('/delete_campaign', methods=["DELETE"])
@@ -187,10 +199,25 @@ def delete_campaign():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+# @app.route('/searchwithImage', methods=["GET"])
+# def search_campaign():
+#     try:
+#         campaign_records = db.db.campaigns.find({})
+#         records = []
+#         list_cur = list(campaign_records)
+  
+#         # Converting to the JSON
+#         json_data = dumps(list_cur, indent = 2)
+#         print(json_data)
+#         return json_data
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 400
+
 @app.route('/search', methods=["GET"])
 def search_campaign():
     try:
-        campaign_records = db.db.campaigns.find({})
+        campaign_records = db.db.campaigns.find({}, {"base64_img": 0})
         records = []
         list_cur = list(campaign_records)
   
