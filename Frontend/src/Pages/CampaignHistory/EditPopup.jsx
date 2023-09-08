@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { FcPrevious } from "react-icons/fc";
-import { useEffect } from "react";
 
-export default function ViewPopup({ setIsViewing, campaign }) {
+export default function EditPopup({ setIsViewing, campaign }) {
 	return (
 		<div className="fixed top-0 left-0 flex justify-center items-center h-full w-full backdrop-blur-sm z-10">
 			<div className="relative bg-white rounded-lg h-[24rem] w-[28rem] shadow-lg flex flex-col items-center">

@@ -11,13 +11,14 @@ import { BsEyeFill } from "react-icons/bs";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Loader from "../../Components/Loader";
 import ViewPopup from "./ViewPopup";
+import DeletePopup from "./DeletePopup";
 
 export default function CampaignHistory(props) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [isViewing, setIsViewing] = useState(-1);
-	const [isEditing, setIsEditing] = useState(false);
-	const [isDeleting, setIsDeleting] = useState(false);
+	const [isEditing, setIsEditing] = useState(-1);
+	const [isDeleting, setIsDeleting] = useState(-1);
 
 	const [campaigns, setCampaigns] = useState([]);
 
@@ -37,6 +38,7 @@ export default function CampaignHistory(props) {
 
 	const handleDeleteClick = (i) => {
 		console.log("Delete button clicked", i);
+		setIsDeleting(i);
 	};
 
 	const fetchCampaign = async () => {
@@ -58,6 +60,31 @@ export default function CampaignHistory(props) {
 
 		setCampaigns(res);
 		setIsLoading(false);
+	};
+
+	const handleDelete = async (id) => {
+		setIsDeleting(-1);
+		setIsLoading(true);
+
+		const [err, res] = await request("delete", "/delete_campaign", {
+			_id: id,
+		});
+
+		console.log(err, res);
+
+		if (err === "network_error") {
+			window.alert("check your network and try again");
+			return;
+		}
+
+		if (err !== null) {
+			window.alert(
+				JSON.stringify(err) + "\n Contact Us! give this error"
+			);
+			return;
+		}
+
+		fetchCampaign();
 	};
 
 	const generateData = () => {
@@ -147,10 +174,16 @@ export default function CampaignHistory(props) {
 				/>
 			)}
 
-			<>
-				{/* <Table data={DUMMY_TABLE_DATA} /> */}
-				<Table data={generateData()} />
-			</>
+			{isDeleting >= 0 && (
+				<DeletePopup
+					setIsDeleting={setIsDeleting}
+					campaign={campaigns[isDeleting]}
+					handleDelete={handleDelete}
+				/>
+			)}
+
+			<Table data={generateData()} />
+			{/* <Table data={DUMMY_TABLE_DATA} /> */}
 		</MainPanelLayout>
 	);
 }
