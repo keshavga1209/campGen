@@ -29,7 +29,6 @@ export default function CampaignHistory(props) {
 	}, []);
 
 	const handleEditClick = (i) => {
-		console.log("Edit button clicked", i);
 		setIsEditing(i);
 	};
 
@@ -58,7 +57,16 @@ export default function CampaignHistory(props) {
 			return;
 		}
 
-		setCampaigns(res);
+		setCampaigns(
+			res.filter((r) => {
+				let date1 = new Date().getTime();
+				let date2 = new Date(r.schedule_date).getTime();
+
+				if (date1 >= date2) return true;
+
+				return false;
+			})
+		);
 		setIsLoading(false);
 	};
 
@@ -66,8 +74,8 @@ export default function CampaignHistory(props) {
 		setIsEditing(-1);
 		setIsLoading(true);
 
-		const [err, res] = await request("post", "/update_campaign", {
-			_id: obj._id.$oid,
+		const [err, res] = await request("POST", "/update_campaign", {
+			_id: obj._id,
 			title: obj.title,
 			raw_prompt: obj.raw_prompt,
 			engineered_prompt: obj.engineered_prompt,

@@ -14,6 +14,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { BsEyeFill } from "react-icons/bs";
 import DeletePopup from "../CampaignHistory/DeletePopup";
 import CalenderEvents from "./CalenderEvents";
+import EditPopup from "../CampaignHistory/EditPopup";
 
 export default function CampaignManager(props) {
 	const [createPopup, setCreatePopup] = useState(false);
@@ -26,6 +27,7 @@ export default function CampaignManager(props) {
 	const [isDeleting, setIsDeleting] = useState(-1);
 
 	const [campaigns, setCampaigns] = useState([]);
+	const [events, setEvents] = useState(Array(0));
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -33,16 +35,14 @@ export default function CampaignManager(props) {
 	}, []);
 
 	const handleEditClick = (i) => {
-		console.log("Edit button clicked", i);
+		setIsEditing(i);
 	};
 
 	const handleViewClick = (i) => {
-		console.log("View button clicked", i);
 		setIsViewing(i);
 	};
 
 	const handleDeleteClick = (i) => {
-		console.log("Delete button clicked", i);
 		setIsDeleting(i);
 	};
 
@@ -63,13 +63,81 @@ export default function CampaignManager(props) {
 			return;
 		}
 
-		setCampaigns(res);
+		setCampaigns(
+			res.filter((r) => {
+				let date1 = new Date().getTime();
+				let date2 = new Date(r.schedule_date).getTime();
+
+				if (date1 < date2) return true;
+
+				return false;
+			})
+		);
+
+		fetchEvents();
+	};
+
+	const fetchEvents = async () => {
+		setIsLoading(true);
+		const [err, res] = await request("post", "/upcoming-events", {
+			"business-name": "Alabasta Bakery",
+		});
+
+		console.log(err, res);
+
+		if (err === "network_error") {
+			window.alert("check your network and try again");
+			return;
+		}
+
+		if (err !== null) {
+			window.alert(
+				JSON.stringify(err) + "\n Contact Us! give this error"
+			);
+			return;
+		}
+
+		setEvents(res.upcomingEvents);
+
 		setIsLoading(false);
+	};
+
+	const handleEdit = async (obj) => {
+		setIsEditing(-1);
+		setIsLoading(true);
+
+		const [err, res] = await request("POST", "/update_campaign", {
+			_id: obj._id,
+			title: obj.title,
+			raw_prompt: obj.raw_prompt,
+			engineered_prompt: obj.engineered_prompt,
+			generated_content: obj.generated_content,
+			created_date: obj.created_date,
+			schedule_date: obj.schedule_date,
+			medium: obj.medium,
+		});
+
+		console.log(err, res);
+
+		if (err === "network_error") {
+			window.alert("check your network and try again");
+			return;
+		}
+
+		if (err !== null) {
+			window.alert(
+				JSON.stringify(err) + "\n Contact Us! give this error"
+			);
+			return;
+		}
+
+		fetchCampaign();
 	};
 
 	const handleDelete = async (id) => {
 		setIsDeleting(-1);
 		setIsLoading(true);
+		window.scrollTo(0, 0);
 
 		const [err, res] = await request("delete", "/delete_campaign", {
 			_id: id,
@@ -195,6 +263,7 @@ export default function CampaignManager(props) {
 					setCreatePopup={setCreatePopup}
 					setStartLevel={setStartLevel}
 					setIsLoading={setIsLoading}
+					events={events}
 				/>
 
 				<h1 className="text-xl font-bold mt-6"> Suggested Media </h1>
@@ -223,6 +292,14 @@ export default function CampaignManager(props) {
 					/>
 				)}
 
+				{isEditing >= 0 && (
+					<EditPopup
+						setIsEditing={setIsEditing}
+						campaign={campaigns[isEditing]}
+						handleEdit={handleEdit}
+					/>
+				)}
+
 				{isDeleting >= 0 && (
 					<DeletePopup
 						setIsDeleting={setIsDeleting}
@@ -231,10 +308,7 @@ export default function CampaignManager(props) {
 					/>
 				)}
 
-				<>
-					{/* <Table data={DUMMY_TABLE_DATA} /> */}
-					<Table data={generateData()} />
-				</>
+				<Table data={generateData()} />
 			</MainPanelLayout>
 		</>
 	);

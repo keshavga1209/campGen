@@ -76,7 +76,7 @@ export default function Level1Prompt({ setCreatePopup, setLevel }) {
 						onChange={(e) => setText(e.target.value)}
 						placeholder="Raw text"
 						cols={48}
-						rows={6}
+						rows={8}
 					/>
 					<button className="bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3 mt-4 w-[6rem] mx-auto">
 						<FcNext />

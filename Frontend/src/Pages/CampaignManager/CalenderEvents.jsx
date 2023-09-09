@@ -13,43 +13,8 @@ export default function CalenderEvents({
 	setStartLevel,
 	setCreatePopup,
 	setIsLoading,
+	events,
 }) {
-	const [events, setEvents] = useState(Array(0));
-
-	useEffect(() => {
-		fetchEvents();
-	}, []);
-
-	const fetchEvents = async () => {
-		const [err, res] = await request("post", "/upcoming-events", {
-			"business-name": "Alabasta Bakery",
-		});
-
-		console.log(err, res);
-
-		if (err === "network_error") {
-			window.alert("check your network and try again");
-			return;
-		}
-
-		if (err !== null) {
-			window.alert(
-				JSON.stringify(err) + "\n Contact Us! give this error"
-			);
-			return;
-		}
-
-		setEvents(res.upcomingEvents);
-	};
-
-	const SuggestedClickFlow = (data) => {
-		// TODO get caption and imgbase64
-		localStorage.setItem("img_base_64", data?.img);
-		localStorage.setItem("caption", data?.content);
-		setStartLevel(69);
-		setCreatePopup(true);
-	};
-
 	return (
 		<div className="w-full flex justify-center items-center mt-4">
 			<div className="flex flex-wrap justify-center gap-y-4 gap-x-6 max-w-[1000px]">
@@ -62,6 +27,7 @@ export default function CalenderEvents({
 							setIsLoading={setIsLoading}
 							setStartLevel={setStartLevel}
 							setCreatePopup={setCreatePopup}
+							events={events}
 						/>
 					))}
 			</div>
