@@ -10,7 +10,7 @@ import notListeningImg from "../../../Assets/mic-disabled.png";
 
 export default function Level1Prompt({ setCreatePopup, setLevel }) {
 	const [text, setText] = useState("");
-
+	const [text_i, setText_i] = useState("");
 	const {
 		transcript,
 		listening,
@@ -24,14 +24,14 @@ export default function Level1Prompt({ setCreatePopup, setLevel }) {
 
 	useEffect(
 		(_) => {
-			if (transcript) setText(text + transcript);
+			if (transcript) {
+				setText(text_i + " " + transcript);
+			} else {
+				setText_i(text);
+			}
 		},
 		[transcript]
 	);
-
-	useEffect(() => {
-		return () => {};
-	}, []);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

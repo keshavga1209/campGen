@@ -56,6 +56,7 @@ export default function CalenderEvents({
 				{events &&
 					events.map((e, i) => (
 						<SmallCard
+							key={i}
 							title={e.event}
 							children={e.prompt}
 							setIsLoading={setIsLoading}
