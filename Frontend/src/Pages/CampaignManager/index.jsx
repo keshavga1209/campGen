@@ -194,6 +194,7 @@ export default function CampaignManager(props) {
 				<CalenderEvents
 					setCreatePopup={setCreatePopup}
 					setStartLevel={setStartLevel}
+					setIsLoading={setIsLoading}
 				/>
 
 				<h1 className="text-xl font-bold mt-6"> Suggested Media </h1>

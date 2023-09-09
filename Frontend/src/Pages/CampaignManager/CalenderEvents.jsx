@@ -9,7 +9,11 @@ import { DUMMY_SUGGESTED_CONTENT } from "./DummySuggestedData";
 import { request } from "../../Utils/request";
 import SmallCard from "./SmallCard";
 
-export default function CalenderEvents({ setStartLevel, setCreatePopup }) {
+export default function CalenderEvents({
+	setStartLevel,
+	setCreatePopup,
+	setIsLoading,
+}) {
 	const [events, setEvents] = useState(Array(0));
 
 	useEffect(() => {
@@ -51,7 +55,13 @@ export default function CalenderEvents({ setStartLevel, setCreatePopup }) {
 			<div className="flex flex-wrap justify-center gap-y-4 gap-x-6 max-w-[1000px]">
 				{events &&
 					events.map((e, i) => (
-						<SmallCard title={e.event} children={e.prompt} />
+						<SmallCard
+							title={e.event}
+							children={e.prompt}
+							setIsLoading={setIsLoading}
+							setStartLevel={setStartLevel}
+							setCreatePopup={setCreatePopup}
+						/>
 					))}
 			</div>
 		</div>
