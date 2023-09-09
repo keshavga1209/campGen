@@ -120,6 +120,10 @@ export default function CampaignHistory(props) {
 		fetchCampaign();
 	};
 
+	const getString = (d) => {
+		return d.toLocaleString();
+	};
+
 	const generateData = () => {
 		let data = {
 			headings: [
@@ -142,11 +146,11 @@ export default function CampaignHistory(props) {
 					</span>,
 					<span className="text-gray-900 whitespace-no-wrap">
 						{" "}
-						{c.schedule_date}{" "}
+						{getString(new Date(c.schedule_date))}
 					</span>,
 					<span className="text-gray-900 whitespace-no-wrap">
 						{" "}
-						{c.created_date}{" "}
+						{getString(new Date(c.created_date))}{" "}
 					</span>,
 					<span className="text-gray-900 whitespace-no-wrap">
 						{" "}

@@ -5,12 +5,12 @@ export default function DeletePopup({ setIsDeleting, campaign, handleDelete }) {
 	return (
 		<div className="fixed top-0 left-0 flex justify-center items-center h-full w-full backdrop-blur-sm z-10">
 			<div className="relative bg-white rounded-lg h-[15rem] w-[28rem] shadow-lg flex flex-col items-center">
-				<button
+				{/* <button
 					className="cursor-pointer absolute top-2 h-7 left-2 bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3"
 					onClick={(_) => setIsDeleting(-1)}>
 					<FcPrevious />
 					Back
-				</button>
+				</button> */}
 
 				<span
 					className="cursor-pointer absolute top-2 right-2"
