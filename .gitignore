@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+token.json
+credentials.json
 temp.jpg
 
 # C extensions

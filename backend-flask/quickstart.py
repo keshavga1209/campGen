@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import datetime
 import os.path
 
 from google.auth.transport.requests import Request
@@ -9,20 +10,13 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/contacts.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 
-def main():
-    """Shows basic usage of the People API.
-    Prints the name of the first 10 connections.
-    """
+def gcal_list_events():
     creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -30,28 +24,30 @@ def main():
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
     try:
-        service = build('people', 'v1', credentials=creds)
+        service = build('calendar', 'v3', credentials=creds)
 
-        # Call the People API
-        print('List 10 connection names')
-        results = service.people().connections().list(
-            resourceName='people/me',
-            pageSize=10,
-            personFields='names,emailAddresses').execute()
-        connections = results.get('connections', [])
+        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        # print('Getting the upcoming 10 events')
+        events_result = service.events().list(calendarId='en.indian#holiday@group.v.calendar.google.com', timeMin=now,
+                                              maxResults=3, singleEvents=True,
+                                              orderBy='startTime').execute()
+        events = events_result.get('items', [])
 
-        for person in connections:
-            names = person.get('names', [])
-            if names:
-                name = names[0].get('displayName')
-                print(name)
-    except HttpError as err:
-        print(err)
+        if not events:
+            print('No upcoming events found.')
+            return []
+
+        # Prints the start and name of the next 10 events
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            print(event['summary'])
+
+    except HttpError as error:
+        print('An error occurred: %s' % error)
 
 
 if __name__ == '__main__':
