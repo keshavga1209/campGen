@@ -13,6 +13,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { BsEyeFill } from "react-icons/bs";
 import DeletePopup from "../CampaignHistory/DeletePopup";
+import CalenderEvents from "./CalenderEvents";
 
 export default function CampaignManager(props) {
 	const [createPopup, setCreatePopup] = useState(false);
@@ -186,6 +187,15 @@ export default function CampaignManager(props) {
 						Create
 					</button>
 				}>
+				<h1 className="text-xl font-bold mt-6">
+					Upcoming Calender Events{" "}
+				</h1>
+
+				<CalenderEvents
+					setCreatePopup={setCreatePopup}
+					setStartLevel={setStartLevel}
+				/>
+
 				<h1 className="text-xl font-bold mt-6"> Suggested Media </h1>
 				<SuggestedContent
 					setCreatePopup={setCreatePopup}
