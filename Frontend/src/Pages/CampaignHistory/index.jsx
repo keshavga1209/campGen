@@ -12,6 +12,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import Loader from "../../Components/Loader";
 import ViewPopup from "./ViewPopup";
 import DeletePopup from "./DeletePopup";
+import EditPopup from "./EditPopup";
 
 export default function CampaignHistory(props) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -29,15 +30,14 @@ export default function CampaignHistory(props) {
 
 	const handleEditClick = (i) => {
 		console.log("Edit button clicked", i);
+		setIsEditing(i);
 	};
 
 	const handleViewClick = (i) => {
-		console.log("View button clicked", i);
 		setIsViewing(i);
 	};
 
 	const handleDeleteClick = (i) => {
-		console.log("Delete button clicked", i);
 		setIsDeleting(i);
 	};
 
@@ -62,9 +62,42 @@ export default function CampaignHistory(props) {
 		setIsLoading(false);
 	};
 
+	const handleEdit = async (obj) => {
+		setIsEditing(-1);
+		setIsLoading(true);
+
+		const [err, res] = await request("post", "/update_campaign", {
+			_id: obj._id.$oid,
+			title: obj.title,
+			raw_prompt: obj.raw_prompt,
+			engineered_prompt: obj.engineered_prompt,
+			generated_content: obj.generated_content,
+			created_date: obj.created_date,
+			schedule_date: obj.schedule_date,
+			medium: obj.medium,
+		});
+
+		console.log(err, res);
+
+		if (err === "network_error") {
+			window.alert("check your network and try again");
+			return;
+		}
+
+		if (err !== null) {
+			window.alert(
+				JSON.stringify(err) + "\n Contact Us! give this error"
+			);
+			return;
+		}
+
+		fetchCampaign();
+	};
+
 	const handleDelete = async (id) => {
 		setIsDeleting(-1);
 		setIsLoading(true);
+		window.scrollTo(0, 0);
 
 		const [err, res] = await request("delete", "/delete_campaign", {
 			_id: id,
@@ -171,6 +204,14 @@ export default function CampaignHistory(props) {
 				<ViewPopup
 					setIsViewing={setIsViewing}
 					campaign={campaigns[isViewing]}
+				/>
+			)}
+
+			{isEditing >= 0 && (
+				<EditPopup
+					setIsEditing={setIsEditing}
+					campaign={campaigns[isEditing]}
+					handleEdit={handleEdit}
 				/>
 			)}
 

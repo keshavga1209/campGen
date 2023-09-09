@@ -167,19 +167,30 @@ export default function CampaignManager(props) {
 
 	return (
 		<>
-			{createPopup && <CreatePopup setCreatePopup={setCreatePopup} startLevel={startLevel}/>}
+			{createPopup && (
+				<CreatePopup
+					setCreatePopup={setCreatePopup}
+					startLevel={startLevel}
+				/>
+			)}
 			<MainPanelLayout
 				title={"Campaign Manager"}
 				button={
 					<button
 						className="bg-green-400 hover:bg-green-500 flex gap-2 items-center rounded-xl py-1 px-3"
-						onClick={(_) => {setStartLevel(1);setCreatePopup(true)}}>
+						onClick={(_) => {
+							setStartLevel(1);
+							setCreatePopup(true);
+						}}>
 						<IoAddCircleSharp />
 						Create
 					</button>
 				}>
 				<h1 className="text-xl font-bold mt-6"> Suggested Media </h1>
-				<SuggestedContent setCreatePopup={setCreatePopup} setStartLevel={setStartLevel}/>
+				<SuggestedContent
+					setCreatePopup={setCreatePopup}
+					setStartLevel={setStartLevel}
+				/>
 
 				<h1 className="text-xl font-bold mt-6">
 					{" "}

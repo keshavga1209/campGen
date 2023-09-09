@@ -2,20 +2,20 @@ import { useEffect } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { FcPrevious } from "react-icons/fc";
 
-export default function EditPopup({ setIsViewing, campaign }) {
+export default function EditPopup({ setIsEditing, campaign, handleEdit }) {
 	return (
 		<div className="fixed top-0 left-0 flex justify-center items-center h-full w-full backdrop-blur-sm z-10">
 			<div className="relative bg-white rounded-lg h-[24rem] w-[28rem] shadow-lg flex flex-col items-center">
 				<button
 					className="cursor-pointer absolute top-2 h-7 left-2 bg-gray-200 hover:bg-gray-400 flex gap-2 items-center rounded-xl py-1 px-3"
-					onClick={(_) => setIsViewing(-1)}>
+					onClick={(_) => setIsEditing(-1)}>
 					<FcPrevious />
 					Back
 				</button>
 
 				<span
 					className="cursor-pointer absolute top-2 right-2"
-					onClick={(_) => setIsViewing(-1)}>
+					onClick={(_) => setIsEditing(-1)}>
 					{" "}
 					<IoCloseCircle size={"25px"} />{" "}
 				</span>
@@ -32,7 +32,6 @@ export default function EditPopup({ setIsViewing, campaign }) {
 							Title
 						</label>
 						<input
-							disabled
 							required
 							type="text"
 							name="title"
@@ -49,7 +48,6 @@ export default function EditPopup({ setIsViewing, campaign }) {
 							Medium
 						</label>
 						<input
-							disabled
 							required
 							name="medium"
 							className="appearance-none h-full rounded-lg bg-gray-300 block w-full border-gray-400 text-gray-700 py-2 px-2  leading-tight focus:outline-none focus:border-gray-500"
@@ -64,7 +62,6 @@ export default function EditPopup({ setIsViewing, campaign }) {
 							Created Date-Time
 						</label>
 						<input
-							disabled
 							required
 							type="datetime-local"
 							name="scheduledDate"
