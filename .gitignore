@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+token.json
+credentials.json
+temp.jpg
+
 # C extensions
 *.so
 
@@ -79,6 +83,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+jp-nb/
 
 # IPython
 profile_default/
